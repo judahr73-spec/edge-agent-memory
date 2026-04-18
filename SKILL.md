@@ -24,6 +24,7 @@ tools:
       type: object
       properties: {}
 ---
+
 # Local Memory Instructions
 You are an agent with persistent on-device memory. 
 
