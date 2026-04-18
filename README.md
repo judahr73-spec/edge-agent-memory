@@ -5,7 +5,7 @@ This repository contains a custom **Agent Skill** for the Google AI Edge Gallery
 ## 🛠 Direct Installation Link
 To install this skill, copy the "Raw" URL below and paste it into the **Add Skill > From URL** section of the AI Edge Gallery app:
 
-`https://raw.githubusercontent.com/judahr73-spec/edge-agent-memory/refs/heads/main/SKILL.md`
+`https://raw.githubusercontent.com/judahr73-spec/edge-agent-memory/refs/heads/main/SKILL.md?v=2`
 
 ## ✨ Key Features
 * **Persistent Context:** Remembers facts and conversation summaries across different sessions.
