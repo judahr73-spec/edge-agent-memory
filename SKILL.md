@@ -1,7 +1,9 @@
 ---
 name: local-memory
-description: Allows the agent to persist chat history and user preferences across sessions using local storage.
+description: Allows the agent to persist chat history and user preferences across sessions.
+source: ./memory.js
 tools:
+...
   - name: save_context
     description: Saves a summary of the current conversation or a specific user preference.
     parameters:
