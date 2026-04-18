@@ -1,40 +1,46 @@
 // memory.js
-export async function save_context({ content }) {
+export const save_context = async ({ content }) => {
   try {
-    const history = JSON.parse(localStorage.getItem('agent_history') || '[]');
-    const entry = {
-      timestamp: new Date().toISOString(),
-      text: content
-    };
-    history.push(entry);
+    // Standardize the content input
+    const textToSave = typeof content === 'string' ? content : JSON.stringify(content);
     
-    // Keep only the last 20 summaries to optimize performance
-    localStorage.setItem('agent_history', JSON.stringify(history.slice(-20)));
-    return "Context successfully saved to on-device storage.";
-  } catch (e) {
-    return `Error saving memory: ${e.message}`;
-  }
-}
+    let history = [];
+    const rawData = localStorage.getItem('agent_history');
+    
+    if (rawData) {
+      history = JSON.parse(rawData);
+    }
+    
+    history.push({
+      timestamp: Date.now(),
+      text: textToSave
+    });
 
-export async function fetch_history({ search_term }) {
+    // Limit storage to prevent memory overflow errors
+    if (history.length > 50) history.shift();
+
+    localStorage.setItem('agent_history', JSON.stringify(history));
+    return "Memory stored successfully.";
+  } catch (err) {
+    // This will help the AI tell you WHY it failed
+    return `Storage Error: ${err.message}. Please check app permissions.`;
+  }
+};
+
+export const fetch_history = async ({ search_term = "" }) => {
   try {
-    const history = JSON.parse(localStorage.getItem('agent_history') || '[]');
-    if (history.length === 0) return "No previous history found.";
+    const rawData = localStorage.getItem('agent_history');
+    if (!rawData) return "No history found.";
     
-    const results = history
-      .filter(item => item.text.toLowerCase().includes(search_term.toLowerCase()))
-      .map(item => `[${item.timestamp}] ${item.text}`);
-      
-    return results.length > 0 ? results.join("\n") : "No matching memories found.";
-  } catch (e) {
-    return `Error retrieving history: ${e.message}`;
+    const history = JSON.parse(rawData);
+    const filtered = history.filter(item => 
+      item.text.toLowerCase().includes(search_term.toLowerCase())
+    );
+    
+    return filtered.length > 0 
+      ? JSON.stringify(filtered.slice(-5)) 
+      : "No matches found.";
+  } catch (err) {
+    return `Fetch Error: ${err.message}`;
   }
-}
-export async function purge_history() {
-  try {
-    localStorage.removeItem('agent_history');
-    return "All local chat history has been successfully purged. I now have a clean slate.";
-  } catch (e) {
-    return `Error clearing memory: ${e.message}`;
-  }
-}
+};
